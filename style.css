@@ -1,0 +1,171 @@
+/* Reset dasar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Dark background */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #0d0d0d;
+    font-family: 'Segoe UI', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.container {
+    background-color: rgba(30, 30, 30, 0.95);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #00fff7;
+    color: white;
+    width: 300px;
+    z-index: 1;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #111;
+    border: 1px solid #00fff7;
+    color: white;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #00fff7;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 5px #00fff7;
+    }
+
+    50% {
+        box-shadow: 0 0 20px #00fff7;
+    }
+
+    100% {
+        box-shadow: 0 0 5px #00fff7;
+    }
+}
+
+/* Form styling */
+form input,
+form button {
+    width: 100%;
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+form input {
+    background-color: #2c2c2c;
+    color: white;
+}
+
+form input:focus {
+    outline: 2px solid #00fff7;
+}
+
+/* Button */
+.btn,
+form button {
+    background-color: #00fff7;
+    color: #000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn:hover,
+form button:hover {
+    background-color: #00e6e0;
+    transform: scale(1.03);
+}
+
+.btn.small {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+}
+
+.btn.danger {
+    background-color: #ff4c4c;
+    color: #fff;
+}
+
+.btn.danger:hover {
+    background-color: #ff1c1c;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    margin-top: 1rem;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    border: 1px solid #333;
+    padding: 0.7rem;
+    text-align: left;
+}
+
+table th {
+    background-color: #2b2b2b;
+}
+
+table tr:nth-child(even) {
+    background-color: #252525;
+}
+
+/* Link styling */
+a {
+    color: #00fff7;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 1.2rem;
+    }
+
+    table {
+        font-size: 0.85rem;
+        overflow-x: auto;
+        display: block;
+    }
+
+    .btn,
+    form button {
+        width: 100%;
+        margin-bottom: 0.7rem;
+    }
+}
