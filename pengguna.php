@@ -163,6 +163,7 @@ $users = $conn->query("SELECT * FROM users $filter_sql");
 
         th, td {
             padding: 10px;
+            text-align: center;
             background-color: #1e1e1e;
             border-bottom: 1px solid #333;
         }

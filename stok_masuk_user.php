@@ -7,35 +7,39 @@ if (!isset($_SESSION["username"]) || $_SESSION["role"] != "user") {
 
 require_once("connect.php");
 
-$query = "SELECT * FROM barang";
-$result = mysqli_query($conn, $query);
-$nomer = 1;
+$pesan = "";
+
+if (isset($_POST["submit"])) {
+    $id_barang = $_POST["id_barang"];
+    $jumlah = $_POST["jumlah"];
+    $tanggal = $_POST["tanggal"];
+
+    // Tanpa sanitasi (untuk latihan keamanan)
+    mysqli_query($conn, "INSERT INTO stok_masuk (id_barang, jumlah, tanggal, user) 
+                         VALUES ('$id_barang', '$jumlah', '$tanggal', '{$_SESSION["username"]}')");
+
+    // Update stok langsung tanpa validasi
+    mysqli_query($conn, "UPDATE barang SET stok = stok + $jumlah WHERE id = $id_barang");
+
+    $pesan = "✅ Stok masuk berhasil ditambahkan!";
+}
+
+$barang = mysqli_query($conn, "SELECT * FROM barang");
 $currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>📋 Data Barang</title>
+    <title>📥 Input Stok Masuk</title>
     <style>
-        body {
+       body {
             margin: 0;
             display: flex;
             background-color: #121212;
             color: #e0e0e0;
             height: 100vh;
             overflow: hidden;
-        }
-
-        .hamburger {
-            display: none;
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            font-size: 24px;
-            color: #00fff7;
-            cursor: pointer;
-            z-index: 10;
         }
 
         .sidebar {
@@ -103,36 +107,22 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             overflow-y: auto;
         }
 
-        .main h2 {
+        .hamburger {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 24px;
             color: #00fff7;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        table, th, td {
-            border: 1px solid #444;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
-
-        td img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            box-shadow: 0 0 6px #00fff7;
+            cursor: pointer;
+            z-index: 10;
         }
 
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
+                top: 0;
+                left: 0;
                 transform: translateX(-100%);
                 z-index: 5;
             }
@@ -142,6 +132,52 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             .hamburger {
                 display: block;
             }
+        }
+
+        input, select {
+            padding: 8px;
+            background-color: #1e1e1e;
+            color: #00fff7;
+            border: 1px solid #00fff7;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        label {
+            margin-top: 1rem;
+            display: block;
+        }
+
+        .btn {
+            background-color: #00fff7;
+            color: #000;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            animation: pulse 1s infinite;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            background-color: #1e1e1e;
+            border-bottom: 1px solid #333;
+        }
+
+        th {
+            background-color: #2b2b2b;
+            color: #00fff7;
         }
     </style>
 </head>
@@ -161,25 +197,29 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 </div>
 
 <div class="main">
-    <h2>📋 Data Barang</h2>
-    <table>
-        <tr>
-            <th>No</th>
-            <th>Gambar</th>
-            <th>Nama</th>
-            <th>Stok</th>
-        </tr>
-        <?php while($row = mysqli_fetch_assoc($result)): ?>
-        <tr>
-            <td><?= $nomer++ ?></td>
-            <td>
-                <img src="uploads/<?= $row['gambar'] ?? 'default.png' ?>" alt="Gambar Barang">
-            </td>
-            <td><?= $row['nama'] ?></td>
-            <td><?= $row['stok'] ?></td>
-        </tr>
-        <?php endwhile; ?>
-    </table>
+    <h2>📥 Input Stok Masuk</h2>
+    
+    <form method="POST">
+        <label for="id_barang">Pilih Barang:</label><br>
+        <select name="id_barang" id="id_barang" required>
+            <option value="">-- Pilih Barang --</option>
+            <?php while($b = mysqli_fetch_assoc($barang)): ?>
+                <option value="<?= $b['id'] ?>"><?= $b['nama'] ?></option>
+            <?php endwhile; ?>
+        </select><br><br>
+
+        <label for="jumlah">Jumlah Masuk:</label><br>
+        <input type="number" name="jumlah" id="jumlah" required><br><br>
+
+        <label for="tanggal">Tanggal Masuk:</label><br>
+        <input type="date" name="tanggal" id="tanggal" required><br><br>
+
+        <button type="submit" name="submit" class="btn">Simpan</button>
+    </form>
+
+    <?php if ($pesan): ?>
+        <div class="pesan"><?= $pesan ?></div>
+    <?php endif; ?>
 </div>
 
 </body>

@@ -11,12 +11,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $barang_id = $_POST["barang_id"];
     $jumlah = $_POST["jumlah"];
+    $tanggal = $_POST["tanggal"];
 
     // Versi tidak aman: tidak ada validasi atau sanitasi input
-    $conn->query("INSERT INTO stok_keluar (barang_id, jumlah, tanggal) VALUES ('$barang_id', '$jumlah', NOW())");
+    $conn->query("INSERT INTO stok_masuk (barang_id, jumlah, tanggal) VALUES ('$barang_id', '$jumlah', '$tanggal')");
 
     // Update stok barang
     $conn->query("UPDATE barang SET stok = stok - $jumlah WHERE id = $barang_id");
+
+    $conn->query("INSERT INTO stok_masuk (barang_id, jumlah, tanggal) VALUES ('$barang_id', '$jumlah', '$tanggal')");
 
     header("Location: stok_keluar_admin.php");
     exit();
@@ -175,7 +178,7 @@ $riwayat = $conn->query("
 
         th, td {
             padding: 10px;
-            text-align: left;
+            text-align: center;
             background-color: #1e1e1e;
             border-bottom: 1px solid #333;
         }
@@ -216,6 +219,9 @@ $riwayat = $conn->query("
 
             <label>Jumlah Keluar:</label><br>
             <input type="number" name="jumlah" required><br><br>
+
+            <label>Tanggal Keluar:</label><br>
+            <input type="date" name="tanggal" required><br><br>
 
             <button type="submit" class="btn">Simpan</button>
         </form>

@@ -123,9 +123,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <h2>👤 User: <?= $_SESSION["username"]; ?></h2>
         <ul>
             <li class="<?= $currentPage == 'dashboard_user.php' ? 'active' : '' ?>">🏠 <a href="dashboard_user.php">Dashboard</a></li>
-            <li class="<?= $currentPage == 'data_barang_user.php' ? 'active' : '' ?>">📋 <a href="data_barang_user.php">Lihat Barang</a></li>
-            <li class="<?= $currentPage == 'input_masuk.php' ? 'active' : '' ?>">📥 <a href="user/input_masuk.php">Input Stok Masuk</a></li>
-            <li class="<?= $currentPage == 'input_keluar.php' ? 'active' : '' ?>">📤 <a href="user/input_keluar.php">Input Stok Keluar</a></li>
+            <li class="<?= $currentPage == 'data_barang_user.php' ? 'active' : '' ?>">📋 <a href="data_barang_user.php">Data Barang</a></li>
+            <li class="<?= $currentPage == 'stok_masuk_user.php' ? 'active' : '' ?>">📥 <a href="stok_masuk_user.php">Stok Masuk</a></li>
+            <li class="<?= $currentPage == 'stok_keluar_user.php' ? 'active' : '' ?>">📤 <a href="stok_keluar_user.php">Stok Keluar</a></li>
             <li>🔓 <a href="logout.php">Logout</a></li>
         </ul>
     </div>
