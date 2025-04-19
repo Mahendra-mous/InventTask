@@ -11,12 +11,17 @@ Sistem manajemen inventaris berbasis web yang mendukung pengelolaan data barang,
   - Isi dari dari Dashboard admin yaitu
     1. Dashboard admin
        ![Dashboard Admin](https://github.com/Mahendra-mous/InventTask/blob/master/Capture/Dashboardadmin.png)
-    3. Data barang admin
-    4. Stok masuk admin
-    5. Stok keluar admin
-    6. Laporan Inventaris
-    7. Kelola Pengguna
-    8. Logout
+    2. Data barang admin
+       ![Data Barang Admin](https://github.com/Mahendra-mous/InventTask/blob/master/Capture/Databarangadmin.png)
+    3. Stok masuk admin
+       ![Stok Masuk Admin](https://github.com/Mahendra-mous/InventTask/blob/master/Capture/Stokmasukadmin.png)
+    4. Stok keluar admin
+       ![Stok Keluar Admin](https://github.com/Mahendra-mous/InventTask/blob/master/Capture/Stokkeluaradmin.png)
+    5. Laporan Inventaris
+       ![Laporan Inventaris Admin](https://github.com/Mahendra-mous/InventTask/blob/master/Capture/Laporaninventaris.png)
+    6. Kelola Pengguna
+       ![Kelola Pengguna](https://github.com/Mahendra-mous/InventTask/blob/master/Capture/Kelolapenggunaadmin.png) 
+    7. Logout
 - CRUD Data Barang
 - Pencatatan Stok Masuk & Keluar
 - Laporan Inventaris
