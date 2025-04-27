@@ -14,12 +14,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tanggal = $_POST["tanggal"];
 
     // Versi tidak aman: tidak ada validasi atau sanitasi input
-    $conn->query("INSERT INTO stok_masuk (barang_id, jumlah, tanggal) VALUES ('$barang_id', '$jumlah', '$tanggal')");
+    $conn->query("INSERT INTO stok_keluar (barang_id, jumlah, tanggal) VALUES ('$barang_id', '$jumlah', '$tanggal')");
 
     // Update stok barang
     $conn->query("UPDATE barang SET stok = stok - $jumlah WHERE id = $barang_id");
-
-    $conn->query("INSERT INTO stok_masuk (barang_id, jumlah, tanggal) VALUES ('$barang_id', '$jumlah', '$tanggal')");
 
     header("Location: stok_keluar_admin.php");
     exit();

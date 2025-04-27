@@ -6,34 +6,39 @@ if (!isset($_SESSION["username"]) || $_SESSION["role"] != "user") {
 }
 
 require_once("connect.php");
+$currentPage = basename($_SERVER['PHP_SELF']);
 
-$pesan = "";
-
-if (isset($_POST["submit"])) {
-    $id_barang = $_POST["id_barang"];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $barang_id = $_POST["barang_id"];
     $jumlah = $_POST["jumlah"];
     $tanggal = $_POST["tanggal"];
 
-    // Tanpa sanitasi (untuk latihan keamanan)
-    mysqli_query($conn, "INSERT INTO stok_keluar (id_barang, jumlah, tanggal, user) 
-                         VALUES ('$id_barang', '$jumlah', '$tanggal', '{$_SESSION["username"]}')");
+    // Versi tidak aman: tidak ada validasi atau sanitasi input
+    $conn->query("INSERT INTO stok_keluar (barang_id, jumlah, tanggal) VALUES ('$barang_id', '$jumlah', '$tanggal')");
 
-    // Update stok langsung tanpa validasi
-    mysqli_query($conn, "UPDATE barang SET stok = stok - $jumlah WHERE id = $id_barang");
+    // Update stok barang
+    $conn->query("UPDATE barang SET stok = stok - $jumlah WHERE id = $barang_id");
 
-    $pesan = "✅ Stok keluar berhasil dicatat!";
+    header("Location: stok_keluar_user.php");
+    exit();
 }
 
-$barang = mysqli_query($conn, "SELECT * FROM barang");
-$currentPage = basename($_SERVER['PHP_SELF']);
+$barang = $conn->query("SELECT * FROM barang");
+
+$riwayat = $conn->query("
+    SELECT sk.*, b.nama AS nama_barang 
+    FROM stok_keluar sk 
+    JOIN barang b ON sk.barang_id = b.id 
+    ORDER BY sk.tanggal DESC
+");
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>📤 Input Stok Keluar</title>
+    <title>📤 Stok Keluar</title>
     <style>
-        /* Salin semua style dari stok_masuk_user.php */
         body {
             margin: 0;
             display: flex;
@@ -42,6 +47,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             height: 100vh;
             overflow: hidden;
         }
+
         .sidebar {
             background-color: #1e1e1e;
             width: 250px;
@@ -50,18 +56,22 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             box-shadow: 0 0 10px #00fff7;
             transition: transform 0.3s ease;
         }
+
         .sidebar h2 {
             margin-bottom: 2rem;
             font-size: 20px;
             color: #00fff7;
         }
+
         .sidebar ul {
             list-style: none;
             padding: 0;
         }
+
         .sidebar li {
             margin: 1rem 0;
         }
+
         .sidebar li.active a {
             background-color: #00fff7;
             color: #000;
@@ -70,6 +80,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             font-weight: bold;
             transform: scale(1.05);
         }
+
         .sidebar a {
             color: #00fff7;
             text-decoration: none;
@@ -79,11 +90,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             border-radius: 6px;
             transition: all 0.3s ease;
         }
+
         @keyframes pulse {
             0% { box-shadow: 0 0 6px #00fff7; }
             50% { box-shadow: 0 0 16px #00fff7; }
             100% { box-shadow: 0 0 6px #00fff7; }
         }
+
         .sidebar a:hover {
             color: #000;
             background-color: #00fff7;
@@ -93,11 +106,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             transform: scale(1.05);
             animation: pulse 0.8s infinite;
         }
+
         .main {
             flex: 1;
             padding: 2rem;
             overflow-y: auto;
         }
+
         .hamburger {
             display: none;
             position: absolute;
@@ -108,6 +123,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             cursor: pointer;
             z-index: 10;
         }
+
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
@@ -123,6 +139,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 display: block;
             }
         }
+
         input, select {
             padding: 8px;
             background-color: #1e1e1e;
@@ -131,10 +148,12 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             border-radius: 4px;
             width: 100%;
         }
+
         label {
             margin-top: 1rem;
             display: block;
         }
+
         .btn {
             background-color: #00fff7;
             color: #000;
@@ -144,56 +163,70 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             cursor: pointer;
             font-weight: bold;
         }
+
         .btn:hover {
             animation: pulse 1s infinite;
         }
-        .pesan {
-            margin-top: 1rem;
-            color: #00ffae;
-            font-weight: bold;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            background-color: #1e1e1e;
+            border-bottom: 1px solid #333;
+        }
+
+        th {
+            background-color: #2b2b2b;
+            color: #00fff7;
         }
     </style>
 </head>
 <body>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
 
-<div class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</div>
+    <div class="sidebar" id="sidebar">
+        <h2>👤 Admin: <?= $_SESSION["username"]; ?></h2>
+        <ul>
+            <li class="<?= $currentPage == 'dashboard_user.php' ? 'active' : '' ?>">🏠 <a href="dashboard_user.php">Dashboard</a></li>
+            <li class="<?= $currentPage == 'data_barang_user.php' ? 'active' : '' ?>">📋 <a href="data_barang_user.php">Data Barang</a></li>
+            <li class="<?= $currentPage == 'stok_masuk_user.php' ? 'active' : '' ?>">📥 <a href="stok_masuk_user.php">Stok Masuk</a></li>
+            <li class="<?= $currentPage == 'stok_keluar_user.php' ? 'active' : '' ?>">📤 <a href="stok_keluar_user.php">Stok Keluar</a></li>
+            <li class="<?= $currentPage == 'logout.php' ? 'active' : '' ?>">🔓 <a href="logout.php">Logout</a></li>
+        </ul>
+    </div>
 
-<div class="sidebar" id="sidebar">
-    <h2>👤 User: <?= $_SESSION["username"]; ?></h2>
-    <ul>
-        <li class="<?= $currentPage == 'dashboard_user.php' ? 'active' : '' ?>">🏠 <a href="dashboard_user.php">Dashboard</a></li>
-        <li class="<?= $currentPage == 'data_barang_user.php' ? 'active' : '' ?>">📋 <a href="data_barang_user.php">Data Barang</a></li>
-        <li class="<?= $currentPage == 'stok_masuk_user.php' ? 'active' : '' ?>">📥 <a href="stok_masuk_user.php">Stok Masuk</a></li>
-        <li class="<?= $currentPage == 'stok_keluar_user.php' ? 'active' : '' ?>">📤 <a href="stok_keluar_user.php">Stok Keluar</a></li>
-        <li>🔓 <a href="logout.php">Logout</a></li>
-    </ul>
-</div>
+    <div class="main">
+        <h1>📤 Stok Keluar</h1>
 
-<div class="main">
-    <h2>📤 Input Stok Keluar</h2>
-    
-    <form method="POST">
-        <label for="id_barang">Pilih Barang:</label><br>
-        <select name="id_barang" id="id_barang" required>
-            <option value="">-- Pilih Barang --</option>
-            <?php while($b = mysqli_fetch_assoc($barang)): ?>
-                <option value="<?= $b['id'] ?>"><?= $b['nama'] ?></option>
-            <?php endwhile; ?>
-        </select><br><br>
+        <form method="POST">
+            <label>Pilih Barang:</label><br>
+            <select name="barang_id" required>
+                <option value="">-- Pilih Barang --</option>
+                <?php while($row = $barang->fetch_assoc()): ?>
+                    <option value="<?= $row['id'] ?>"><?= $row['nama'] ?></option>
+                <?php endwhile; ?>
+            </select><br><br>
 
-        <label for="jumlah">Jumlah Keluar:</label><br>
-        <input type="number" name="jumlah" id="jumlah" required><br><br>
+            <label>Jumlah Keluar:</label><br>
+            <input type="number" name="jumlah" required><br><br>
 
-        <label for="tanggal">Tanggal Keluar:</label><br>
-        <input type="date" name="tanggal" id="tanggal" required><br><br>
+            <label>Tanggal Keluar:</label><br>
+            <input type="date" name="tanggal" required><br><br>
 
-        <button type="submit" name="submit" class="btn">Simpan</button>
-    </form>
+            <button type="submit" class="btn">Simpan</button>
+        </form>
+    </div>
 
-    <?php if ($pesan): ?>
-        <div class="pesan"><?= $pesan ?></div>
-    <?php endif; ?>
-</div>
-
+    <script>
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+    </script>
 </body>
 </html>

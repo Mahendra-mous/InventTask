@@ -2,9 +2,9 @@
 session_start();
 require 'connect.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["username"]) && isset($_POST["password"])) {
-    $username = $_POST["username"];
-    $password = $_POST["password"];
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["username"]) && isset($_GET["password"])) {
+    $username = $_GET["username"];
+    $password = $_GET["password"];
 
     // Celah: SQL Injection karena input langsung dimasukkan ke query
     $sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
@@ -139,7 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["username"]) && isset($
     <div class="container">
         <h2>Login</h2>
         <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
-        <form method="POST" action="login.php">
+        <form method="GET" action="login.php">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Masuk</button>
