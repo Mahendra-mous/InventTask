@@ -10,20 +10,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nama = $_POST["nama"];
     $stok = $_POST["stok"];
 
-    // Proses upload gambar
-    $gambar = '';
-    if (isset($_FILES["gambar"]) && $_FILES["gambar"]["error"] == 0) {
-        $target_dir = "uploads/";
-        $filename = basename($_FILES["gambar"]["name"]);
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        $unique_name = uniqid() . "." . $ext;
-        $target_file = $target_dir . $unique_name;
+$gambar = '';
+if (isset($_FILES["gambar"]) && $_FILES["gambar"]["error"] == 0) {
+    $target_dir = "uploads/";
+    $filename = basename($_FILES["gambar"]["name"]);
+    $target_file = $target_dir . $filename;
 
-        // Simpan file
-        if (move_uploaded_file($_FILES["gambar"]["tmp_name"], $target_file)) {
-            $gambar = $unique_name;
-        }
+    if (move_uploaded_file($_FILES["gambar"]["tmp_name"], $target_file)) {
+        $gambar = $filename;
     }
+}
 
     // Simpan ke database
     $sql = "INSERT INTO barang (nama, stok, gambar) VALUES ('$nama', '$stok', '$gambar')";

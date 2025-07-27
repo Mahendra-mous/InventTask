@@ -7,8 +7,8 @@ if (!isset($_SESSION["username"]) || $_SESSION["role"] != "admin") {
 
 require_once("connect.php");
 
-// Rentan SQL Injection: langsung ambil dari URL tanpa validasi
-$id = $_GET["id"];
+
+$id = $_POST["id"];
 
 $conn->query("DELETE FROM barang WHERE id = $id");
 

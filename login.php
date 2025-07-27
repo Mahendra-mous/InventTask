@@ -1,32 +1,32 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 require 'connect.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["username"]) && isset($_GET["password"])) {
-    $username = $_GET["username"];
-    $password = $_GET["password"];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $username = $_POST["username"] ?? '';
+    $password = $_POST["password"] ?? '';
 
-    // Celah: SQL Injection karena input langsung dimasukkan ke query
     $sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
     $result = $conn->query($sql);
 
-    if ($result && $result->num_rows == 1) {
-        $user = $result->fetch_assoc();
-        $_SESSION["username"] = $user["username"];
-        $_SESSION["role"] = $user["role"];
+    echo "<div style='color: yellow; background: #222; padding: 10px;'>DEBUG QUERY: $sql</div>";
 
-        if ($user["role"] == "admin") {
-            header("Location: dashboard_admin.php");
-        } else {
-            header("Location: dashboard_user.php");
-        }
+    if ($result && $result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        $_SESSION["username"] = $user['username'];
+        $_SESSION["role"] = $user['role'];
+
+        // Redirect ke dashboard admin
+        header("Location: dashboard_admin.php");
         exit();
     } else {
-        $error = "Username atau password salah!";
+        $error = "Login gagal! Username atau password salah.";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -139,12 +139,11 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["username"]) && isset($_G
     <div class="container">
         <h2>Login</h2>
         <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
-        <form method="GET" action="login.php">
+        <form method="POST" action="login.php">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Masuk</button>
+            <button type="submit">Login</button>
         </form>
-        <p>Belum punya akun? <a href="register.php">Daftar di sini</a></p>
-        </div>
+    </div>
 </body>
 </html>
