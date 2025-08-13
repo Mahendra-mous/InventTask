@@ -13,7 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $jumlah = $_POST["jumlah"];
     $tanggal = $_POST["tanggal"];
 
-    // Versi tidak aman: tidak ada validasi atau sanitasi input
     $conn->query("INSERT INTO stok_keluar (barang_id, jumlah, tanggal) VALUES ('$barang_id', '$jumlah', '$tanggal')");
 
     // Update stok barang
