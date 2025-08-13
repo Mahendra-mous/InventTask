@@ -13,7 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $jumlah = $_POST["jumlah"];
     $tanggal = $_POST["tanggal"];
 
-    // Insert data stok masuk (versi tidak aman)
     $conn->query("INSERT INTO stok_masuk (barang_id, jumlah, tanggal) VALUES ('$barang_id', '$jumlah', '$tanggal')");
 
     // Update stok barang
