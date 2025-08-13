@@ -8,7 +8,7 @@ require_once("connect.php");
 $currentPage = basename($_SERVER['PHP_SELF']);
 $nomer = 1;
 
-// Hapus pengguna (versi tidak aman)
+
 if (isset($_GET['hapus'])) {
     $id = $_GET['hapus'];
     $conn->query("DELETE FROM users WHERE id = $id");
@@ -16,7 +16,7 @@ if (isset($_GET['hapus'])) {
     exit();
 }
 
-// Edit pengguna
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_user'])) {
     $id = $_POST['id'];
     $username = $_POST['username'];
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_user'])) {
     exit();
 }
 
-// Filter pencarian
+
 $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
 $filter_sql = $keyword ? "WHERE username LIKE '%$keyword%' OR role LIKE '%$keyword%'" : "";
 $users = $conn->query("SELECT * FROM users $filter_sql");
