@@ -12,6 +12,6 @@ $id = $_POST["id"];
 
 $conn->query("DELETE FROM barang WHERE id = $id");
 
-// Setelah menghapus, redirect balik ke halaman data barang
+
 header("Location: data_barang_admin.php");
 exit();
