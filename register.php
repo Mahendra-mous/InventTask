@@ -10,7 +10,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"];
     $role = "user"; // default role
 
-    // Celah: tidak menggunakan prepared statement (raw SQL)
     $sql = "INSERT INTO users (username, email, password, role) VALUES ('$username', '$email', '$password', '$role')";
 
     if ($conn->query($sql)) {
