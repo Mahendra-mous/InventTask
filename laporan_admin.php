@@ -8,7 +8,7 @@ require_once("connect.php");
 
 $currentPage = basename($_SERVER['PHP_SELF']);
 
-// Tangkap filter dari GET (tidak disanitasi)
+
 $filter = isset($_GET['filter']) ? $_GET['filter'] : "";
 $tgl_awal = isset($_GET['tgl_awal']) ? $_GET['tgl_awal'] : "";
 $tgl_akhir = isset($_GET['tgl_akhir']) ? $_GET['tgl_akhir'] : "";
