@@ -6,7 +6,7 @@ if (!isset($_SESSION["username"]) || $_SESSION["role"] != "admin") {
 }
 require_once("connect.php");
 
-// Rentan SQL Injection (versi celah keamanan)
+
 $id = $_GET["id"];
 $result = $conn->query("SELECT * FROM barang WHERE id = $id");
 $data = $result->fetch_assoc();
